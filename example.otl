@@ -18,15 +18,29 @@ First level, Item 2
 		| Hoover |   1 |    dog |           both |
 		| Sophia |   9 |    cat |         inside |
 	No List item 3
-First level, Item 3
+User-defined text test
 	: We can write more text.
 	> And indent a text block if we want to.
 	: Isn't that cool?!
 	: And even better: We can add code!
 	< while (true):
 	<    print("Hello?")
-First level, Item 4
+Nested List Test
 	Nested List Lvl 1, Item 1
 		Nested List Lvl 2, Item 1
 		Nested List Lvl 2, Item 2
 	Nested List Lvl 1, Item 2
+Forced List Test
+	[X] Item 1
+		: We may want to add some explanations here.
+	[_] Item 2
+		: And here.
+		[X] Item 2.1
+		[_] Item 2.3
+			: Unchecked items are marked as TODO.
+		[X] Item 2.4
+			; What about preformatted text?
+		[X] Item 2.5
+			> And user-defined text
+		[X] Item 2.6
+			< And code?

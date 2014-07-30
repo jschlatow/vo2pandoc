@@ -9,8 +9,8 @@
 import sys
 import re
 
-todoStart = "\\todo[inline]{"
-todoEnd   = "}"
+todoStart = "__TODO__ "
+todoEnd   = ""
 
 def showHelp():
     # TODO add option: automatic lists
@@ -100,7 +100,7 @@ def processBodyPreText(idx, lines):
     return [out, idx]
 
 def processUserText(idx, lines):
-    out = []
+    out = [""]
     while idx >= 0 and lines[idx].strip().startswith('>'):
         out.append(lines[idx].strip())
         idx = nextIdx(idx, lines)
@@ -109,7 +109,7 @@ def processUserText(idx, lines):
     return [out, idx]
 
 def processUserPreText(idx, lines):
-    out = ["~~~"]
+    out = ["", "~~~"]
     while idx >= 0 and lines[idx].strip().startswith('<'):
         out.append(lines[idx].strip()[1:])
         idx = nextIdx(idx, lines)
@@ -141,6 +141,7 @@ def processSection(idx, lines, level):
         isList  = True
         firstItem = True
         makeList = False
+        forceList = False
         items = []
         while curlevel > level and idx >= 0:
             curline = lines[idx]
@@ -200,17 +201,20 @@ def processSection(idx, lines, level):
 
                 [textout, nidx] = processTable(idx, lines)
                 out.extend(textout)
-            elif start == '[':
-                # TODO implement checkbox parsing (i.e. modify curline and force list generation)
-                print("Error: Checkboxes not implemented")
-                sys.exit()
             else:
+                if start == '[':
+                    if curline.strip()[1] == "_":
+                        curline = todoStart + curline.strip()[4:] + todoEnd
+                    else:
+                        curline = curline.strip()[4:]
+                    forceList = True
+
                 [secout, nidx, isListItem] = processSection(nextIdx(idx, lines), lines, curlevel)
                 if firstItem:
                     items = []
                     firstItem = False
-                    makeList = isListItem
-                elif not isListItem:
+                    makeList = isListItem or forceList
+                elif not isListItem and not forceList:
                     isList = False
                     makeList = False
 
